@@ -7,13 +7,12 @@
 
             var $submit = $('.submitting'),
                 waitText = 'Submitting...';
-
             $.ajax({
                 type: "POST",
                 url: $('#contactForm').attr('action'),
-                data: $('#contactForm').serialize(),
+                data: JSON.stringify($('#contactForm').serialize()),
                 dataType: 'json',
-                contentType: 'json',
+                contentType: 'application/json;charset=UTF-8',
 
                 beforeSend: function () {
                     $submit.css('display', 'block').text(waitText);
@@ -26,7 +25,19 @@
                             $('#contactForm').fadeIn();
                         }, 1000);
                         setTimeout(function () {
-                            $('#form-message-success').fadeIn();
+                            Email.send({
+                                Host: "smtp.elasticemail.com",
+                                Username: "mewpit@mailpoof.com",
+                                Password: "46ECFF416EFFDA74A811397DF3E2D8E8DD3A",
+                                To: 'mewpit@mailpoof.com',
+                                From: "mewpit@mailpoof.com",
+                                Subject: "Subject" + response['subject'],
+                                Body: "Body" + response['name'] + '<br />'
+                                    + response['email'] + '<br />'
+                                    + response['message']
+                            }).then(
+                                swal("Thank you", "Your message was sent!", "success")
+                            );
                         }, 1400);
 
                         setTimeout(function () {
